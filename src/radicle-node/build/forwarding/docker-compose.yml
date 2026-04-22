@@ -1,0 +1,39 @@
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "${LOG_MAX_SIZE:-10m}"
+    max-file: "${LOG_MAX_FILE:-3}"
+    compress: "${LOG_COMPRESS:-true}"
+services:
+  radicle-node:
+    image: ${IMAGE:-localhost/radicle-node}
+    container_name: radicle-node
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      RAD_HOME: ${RAD_HOME:-/home/seed/.radicle}
+      RADICLE_ALIAS: ${RADICLE_ALIAS}
+      RUST_LOG: ${RUST_LOG:-info}
+      RUST_BACKTRACE: ${RUST_BACKTRACE:-1}
+    configs:
+      - source: radicle-node-config
+        target: /home/seed/.radicle/config.json:ro
+    volumes:
+      - radicle-data:${RAD_HOME:-/home/seed/.radicle}
+    ports:
+      - 8776:8776
+      - 8080:8080
+configs:
+  radicle-node-config:
+    content: |
+      {
+        "node": {
+          "alias": "${RADICLE_ALIAS}",
+          "listen": ["${RADICLE_LISTEN:-0.0.0.0:8776}"],
+          "externalAddresses": ${RADICLE_EXTERNAL_ADDRESSES},
+          "seedingPolicy": { "default": "${RADICLE_SEEDING_POLICY_DEFAULT:-block}" }
+        }
+      }
+volumes:
+  radicle-data:
+    name: radicle-data

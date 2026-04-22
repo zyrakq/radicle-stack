@@ -1,0 +1,8 @@
+services:
+  radicle-node:
+    networks:
+      - radicle-node-workspace-network
+
+networks:
+  radicle-node-workspace-network:
+    external: true

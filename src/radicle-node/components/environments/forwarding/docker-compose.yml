@@ -1,0 +1,5 @@
+services:
+  radicle-node:
+    ports:
+      - 8776:8776
+      - 8080:8080

@@ -1,0 +1,4 @@
+services:
+  radicle-explorer:
+    ports:
+      - 8081:80

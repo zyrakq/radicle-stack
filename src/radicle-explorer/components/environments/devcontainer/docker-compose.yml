@@ -1,0 +1,8 @@
+services:
+  radicle-explorer:
+    networks:
+      - radicle-explorer-workspace-network
+
+networks:
+  radicle-explorer-workspace-network:
+    external: true

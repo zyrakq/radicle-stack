@@ -1,0 +1,35 @@
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "${LOG_MAX_SIZE:-10m}"
+    max-file: "${LOG_MAX_FILE:-3}"
+    compress: "${LOG_COMPRESS:-true}"
+services:
+  radicle-explorer:
+    image: ${IMAGE:-localhost/radicle-explorer}
+    container_name: radicle-explorer
+    restart: unless-stopped
+    logging: *default-logging
+    configs:
+      - source: radicle-explorer-config
+        target: /usr/share/nginx/html/config.json:ro
+    ports:
+      - 8081:80
+configs:
+  radicle-explorer-config:
+    content: |-
+      {
+        "nodes": {
+          "requiredApiVersion": "${RAD_API_VERSION:-~0.18.0}",
+          "defaultHttpdPort": ${RAD_API_PORT:-8080},
+          "defaultLocalHttpdPort": ${RAD_API_PORT:-8080},
+          "defaultHttpdScheme": "http"
+        },
+        "preferredSeeds": [
+          {
+            "hostname": "${RAD_API_HOST:-localhost}",
+            "port": ${RAD_API_PORT:-8080},
+            "scheme": "${RAD_API_SCHEME:-http}"
+          }
+        ]
+      }
